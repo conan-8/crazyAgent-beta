@@ -42,6 +42,7 @@ import { runAgentTask, type ActionVerify, type ExecuteBatch, type ExecuteResult 
 import { createLlmClient } from "./agent/llm";
 import { loadSettings } from "./settings";
 import { recordHistory } from "./history";
+import { addRunStats } from "./lifetime";
 import { netlog } from "./netlog";
 import {
   deleteConversation,
@@ -496,6 +497,9 @@ function emitNow(event: StepEvent): void {
   }
   if (event.kind === "done") {
     void recordHistory(currentTask, event);
+    // Lifetime totals for the Settings sheet. Done events without stats (the
+    // pre-run error path) carry nothing to count.
+    if (event.stats) void addRunStats(event.stats);
   }
 }
 

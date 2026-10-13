@@ -2872,6 +2872,44 @@ input[type="number"]::-webkit-inner-spin-button {
   gap: 10px;
 }
 
+/* Statistics group: read-only lifetime totals, so label over a mono value —
+   nothing here should look editable like the fields above it. */
+.stat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.stat-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--surface);
+  min-width: 0;
+}
+
+.stat-cell span {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-faint);
+}
+
+.stat-cell strong {
+  font-family: var(--mono);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.stat-note {
+  margin: 0;
+  font-size: 11px;
+  color: var(--text-faint);
+}
+
 .input-affix {
   position: relative;
   display: flex;

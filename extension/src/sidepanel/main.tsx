@@ -34,7 +34,7 @@ import {
   type ChatTurn,
   type ToolCard,
 } from "../shared/chat";
-import { formatElapsed, formatTokens } from "../shared/modes";
+import { formatDuration, formatElapsed, formatTokens } from "../shared/modes";
 import {
   matchSlash,
   parseSlash,
@@ -65,6 +65,7 @@ import {
   type ApiKeyEntry,
   type JevSettings,
 } from "../background/settings";
+import { loadLifetime, type LifetimeStats } from "../background/lifetime";
 import { Icon, ICONS } from "./icons";
 import { Collapse, useAutosize, usePresence, useSmoothFollow, useStickToBottom } from "./motion";
 
@@ -1325,8 +1326,10 @@ const PRIVACY_URL = "https://github.com/conan-8/crazyAgent/blob/main/PRIVACY.md"
 function SettingsBody({ onClose }: { onClose: () => void }) {
   const [s, setS] = useState<AgentSettings | null>(null);
   const [saved, setSaved] = useState(false);
+  const [life, setLife] = useState<LifetimeStats | null>(null);
   useEffect(() => {
     void loadSettings().then(setS);
+    void loadLifetime().then(setLife);
   }, []);
   const set = <K extends keyof AgentSettings>(k: K, v: AgentSettings[K]) => {
     // Functional update: multiple field edits batch correctly.
@@ -1573,6 +1576,23 @@ function SettingsBody({ onClose }: { onClose: () => void }) {
                 title="Never take focus"
                 hint="The agent types without bringing its window in front of yours. Turn this off only if a page ignores the agent until its window is visible"
               />
+            </section>
+
+            <section class="set-group" style="--i:7">
+              <h3 class="set-title">
+                <Icon d={ICONS.activity} size={12} /> Statistics
+              </h3>
+              <div class="stat-grid">
+                <div class="stat-cell">
+                  <span>Total tokens used</span>
+                  <strong>{formatTokens(life?.totalTokens ?? 0)}</strong>
+                </div>
+                <div class="stat-cell">
+                  <span>Total runtime</span>
+                  <strong>{formatDuration(life?.elapsedMs ?? 0)}</strong>
+                </div>
+              </div>
+              <p class="stat-note">Across every finished agent run on this profile</p>
             </section>
           </div>
           <div class="version-line">
